@@ -24,7 +24,7 @@ const EditTodoForm = ({ task, editTask }: Props) => {
       onSubmit={handleSubmit}
     >
       <input
-        className="p-2 dark:bg-zinc-800 border-black border rounded"
+        className="p-2 dark:bg-zinc-800 border-black border rounded dark:border-white"
         type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
