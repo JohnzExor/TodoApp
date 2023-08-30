@@ -14,22 +14,15 @@ interface Todo {
   isEditing: boolean;
 }
 
-const TodoWrapper = () => {
+interface Props {
+  toggleTheme: () => void;
+}
+
+const TodoWrapper = ({ toggleTheme }: Props) => {
   const initialTodos = JSON.parse(localStorage.getItem("todos") || "[]");
   const [todos, setTodos] = useState<Todo[]>(initialTodos);
-  const [theme, setTheme] = useState<string | null>(null);
 
   useEffect(() => {
-    const currentTheme = localStorage.getItem("theme");
-
-    if (currentTheme === "dark") {
-      setTheme("dark");
-      document.documentElement.classList.add("dark");
-    } else {
-      setTheme("light");
-      document.documentElement.classList.remove("dark");
-    }
-
     const storedTodos = localStorage.getItem("todos");
     if (storedTodos) {
       setTodos(JSON.parse(storedTodos));
@@ -39,18 +32,6 @@ const TodoWrapper = () => {
   useEffect(() => {
     localStorage.setItem("todos", JSON.stringify(todos));
   }, [todos]);
-
-  const toggleTheme = () => {
-    if (theme === "dark") {
-      setTheme("light");
-      localStorage.setItem("theme", "light");
-      document.documentElement.classList.remove("dark");
-    } else {
-      setTheme("dark");
-      localStorage.setItem("theme", "dark");
-      document.documentElement.classList.add("dark");
-    }
-  };
 
   const addTodo = (todo: string) => {
     setTodos([
