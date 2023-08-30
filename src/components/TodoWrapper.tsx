@@ -1,6 +1,6 @@
 import { BsMoonStarsFill } from "react-icons/bs";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import TodoForm from "./TodoForm";
@@ -15,9 +15,42 @@ interface Todo {
 }
 
 const TodoWrapper = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const initialTodos = JSON.parse(localStorage.getItem("todos") || "[]");
+  const [todos, setTodos] = useState<Todo[]>(initialTodos);
+  const [theme, setTheme] = useState<string | null>(null);
 
-  const [darkMode, useDarkMode] = useState(false);
+  useEffect(() => {
+    const currentTheme = localStorage.getItem("theme");
+
+    if (currentTheme === "dark") {
+      setTheme("dark");
+      document.documentElement.classList.add("dark");
+    } else {
+      setTheme("light");
+      document.documentElement.classList.remove("dark");
+    }
+
+    const storedTodos = localStorage.getItem("todos");
+    if (storedTodos) {
+      setTodos(JSON.parse(storedTodos));
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
+
+  const toggleTheme = () => {
+    if (theme === "dark") {
+      setTheme("light");
+      localStorage.setItem("theme", "light");
+      document.documentElement.classList.remove("dark");
+    } else {
+      setTheme("dark");
+      localStorage.setItem("theme", "dark");
+      document.documentElement.classList.add("dark");
+    }
+  };
 
   const addTodo = (todo: string) => {
     setTodos([
@@ -46,14 +79,14 @@ const TodoWrapper = () => {
     setTodos(todos.filter((todo) => todo.id !== id));
   };
   return (
-    <div className={darkMode ? "dark" : ""}>
+    <div>
       <div className="h-screen w-full flex justify-center dark:bg-zinc-950 dark:text-white">
         <div className="mt-20">
           <div className="mb-14">
             <h1 className="text-center text-6xl mb-4">Todo App</h1>
             <BsMoonStarsFill
               className=" cursor-pointer text-2xl m-auto"
-              onClick={() => useDarkMode(!darkMode)}
+              onClick={toggleTheme}
             />
           </div>
 
